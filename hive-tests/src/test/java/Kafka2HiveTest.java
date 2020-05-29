@@ -145,13 +145,17 @@ public class Kafka2HiveTest {
 
 		// ---------- Insert into Hive and consume from it. -------------------
 
-		String insertIntoHive = "INSERT INTO hive.`default`.hive_table SELECT\n" +
-				"  CAST(TUMBLE_END(ts, INTERVAL '5' SECOND) AS VARCHAR),\n" +
-				"  CAST(MAX(ts) AS VARCHAR),\n" +
-				"  COUNT(*),\n" +
-				"  CAST(MAX(price) AS DECIMAL(10, 2))\n" +
-				"FROM kafka\n" +
-				"GROUP BY TUMBLE(ts, INTERVAL '5' SECOND)";
+//		String insertIntoHive = "INSERT INTO hive.`default`.hive_table SELECT\n" +
+//				"  CAST(TUMBLE_END(ts, INTERVAL '5' SECOND) AS VARCHAR),\n" +
+//				"  CAST(MAX(ts) AS VARCHAR),\n" +
+//				"  COUNT(*),\n" +
+//				"  CAST(MAX(price) AS DECIMAL(10, 2))\n" +
+//				"FROM kafka\n" +
+//				"GROUP BY TUMBLE(ts, INTERVAL '5' SECOND)";
+
+		String insertIntoHive = "INSERT INTO hive.`default`.hive_table select cast(a as varchar(50))," +
+				"cast(b as varchar(50)), c, cast(d as decimal(10, 2)) from (values " +
+				"('abc', 'def', 123, 12.3), ('wxy', 'def', 456, 45.6)) as t(a, b, c, d)";
 
 		// TODO: 数据无法写到 hive 表 没有异常
 		Utils.executeInsertAndExit(tEnv, insertIntoHive, 50000000);
